@@ -29,10 +29,10 @@ const ClientController = {
             href: `/clients/${client.client._id}`,
             method: "GET",
           },
-          delete: {
-            href: "/clients/delete",
-            method: "DELETE",
-            description: "Delete a client",
+          update: {
+            href: `/clients/update${client.client._id}`,
+            method: "PUT",
+            description: "Update a client",
           },
         },
       });
@@ -67,6 +67,156 @@ const ClientController = {
           },
           create: {
             href: "/clients/create",
+            method: "POST",
+            description: "Create a new client",
+          },
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        error: {
+          code: 500,
+          method: req.method,
+          message: "Error, while get all the client",
+          details: {
+            controller: "ClientController",
+            cause: error.message,
+          },
+        },
+      });
+    }
+  },
+  getOne: async (req, res) => {
+    try {
+      const client = await ClientService.getOne(req.params.id);
+
+      if (client.error) {
+        return res.status(client.code).json({
+          error: {
+            code: client.code,
+            method: req.method,
+            message: "Error, while getOne the client",
+            details: {
+              controller: "ClientController",
+              cause: client.error.message,
+            },
+          },
+        });
+      }
+
+      return res.status(client.code).json({
+        code: client.code,
+        method: req.method,
+        message: client.message,
+        client: client.client,
+        _links: {
+          self: {
+            href: `/clients/${client.client._id}`,
+            method: "GET",
+          },
+          delete: {
+            href: `/clients/delete/${client.client._id}`,
+            method: "DELETE",
+            description: "Delete a client",
+          },
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        error: {
+          code: 500,
+          method: req.method,
+          message: "Error, while get all the client",
+          details: {
+            controller: "ClientController",
+            cause: error.message,
+          },
+        },
+      });
+    }
+  },
+  update: async (req, res) => {
+    try {
+      const client = await ClientService.update(req.params.id, req.client);
+
+      if (client.error) {
+        return res.status(client.code).json({
+          error: {
+            code: client.code,
+            method: req.method,
+            message: "Error, while creating the client",
+            details: {
+              controller: "ClientController",
+              cause: client.error.message,
+            },
+          },
+        });
+      }
+
+      return res.status(client.code).json({
+        code: client.code,
+        method: req.method,
+        message: client.message,
+        client: client.client,
+        _links: {
+          self: {
+            href: `/clients/${client.client._id}`,
+            method: "GET",
+          },
+          delete: {
+            href: `/clients/delete/${client.client._id}`,
+            method: "DELETE",
+            description: "Delete a client",
+          },
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        error: {
+          code: 500,
+          method: req.method,
+          message: "Error, while get all the client",
+          details: {
+            controller: "ClientController",
+            cause: error.message,
+          },
+        },
+      });
+    }
+  },
+  delete: async (req, res) => {
+    try {
+      const client = await ClientService.delete(req.params.id);
+
+      if (client.error) {
+        return res.status(client.code).json({
+          error: {
+            code: client.code,
+            method: req.method,
+            message: "Error, while delete the client",
+            details: {
+              controller: "ClientController",
+              cause: client.error.message,
+            },
+          },
+        });
+      }
+
+      return res.status(client.code).json({
+        code: client.code,
+        method: req.method,
+        message: client.message,
+        client: client.client,
+        _links: {
+          self: {
+            href: `/clients/${client.client._id}`,
+            method: "GET",
+          },
+          create: {
+            href: `/clients/create`,
             method: "POST",
             description: "Create a new client",
           },
