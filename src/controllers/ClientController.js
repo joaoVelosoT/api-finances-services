@@ -3,6 +3,7 @@ const ClientService = require("../services/ClientService");
 const ClientController = {
   create: async (req, res) => {
     try {
+      
       const client = await ClientService.create(req.client);
 
       if (client.error) {
@@ -53,7 +54,22 @@ const ClientController = {
   },
   getAll: async (req, res) => {
     try {
-      const clients = await ClientService.getAll();
+      // console.log(req.query);
+      const clients = await ClientService.getAll(req.query);
+
+      if(clients.error){
+        return res.status(clients.code).json({
+          error: {
+            code: clients.code,
+            method: req.method,
+            message: "Error, while getAll the client",
+            details: {
+              controller: "ClientController",
+              cause: clients.error.message,
+            },
+          },
+        });
+      }
 
       return res.status(clients.code).json({
         code: clients.code,
