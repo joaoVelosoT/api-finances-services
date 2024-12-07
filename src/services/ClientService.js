@@ -28,31 +28,39 @@ const ClientService = {
   getAll: async (query) => {
     try {
       // Estudando paginação
-      
+
       // Pegando a pagina que o usuario mandou;
-      const { page = 1 } = query
+      const { page = 1, name, email } = query;
+
+      // Fazendo uma filtragem com base no que o usuario mandou na url
+      var filter = {};
+      if (name) {
+        filter.name = name;
+      }
+      if (email) {
+        filter.email = email;
+      }
+
+      
 
       // Pegar o limite de cada busca no db;
-      const limit = 3
+      const limit = 10;
 
-      // Criar variavel com o numero da ultima pagina, por padrao e 1 
-      var lastPage = 1
+      // Criar variavel com o numero da ultima pagina, por padrao e 1
+      var lastPage = 1;
 
       // Pegar no db a quantidade de clients
       const countClient = await Client.countDocuments();
 
-      if(countClient !== 0){
-        lastPage =  Math.ceil(countClient / limit) // Dividindo a quantidade de cliente com o limite, vamos ter a ultima pagina
-      }else {
-        return "err" // se nao tiver nenhum cliente cadastrado, ira retornar uma mensagem de erro
+      if (countClient !== 0) {
+        lastPage = Math.ceil(countClient / limit); // Dividindo a quantidade de cliente com o limite, vamos ter a ultima pagina
+      } else {
+        return "err"; // se nao tiver nenhum cliente cadastrado, ira retornar uma mensagem de erro
       }
 
-      const skip = page * limit - limit // conta para saber quantos clientes vao pular ate chegar na paginação escolhida
+      const skip = page * limit - limit; // conta para saber quantos clientes vao pular ate chegar na paginação escolhida
 
-      const clients = await Client.find().skip(skip).limit(limit); // fazendo o get, mandando quantos clientes vao pular, e o limite de quantos vao trazer
-
-
-        
+      const clients = await Client.find(filter).skip(skip).limit(limit); // fazendo o get, mandando quantos clientes vao pular, e o limite de quantos vao trazer
 
       return {
         code: 200,

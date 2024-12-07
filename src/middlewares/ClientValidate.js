@@ -70,7 +70,7 @@ const ClientValidate = async (req, res, next) => {
   }
 };
 
-const ClienteValidateID = async (req, res, next) => {
+const ClientValidateID = async (req, res, next) => {
   try {
     const isValidId = await isMongoID(req.params.id);
 
@@ -101,4 +101,4 @@ const ClienteValidateID = async (req, res, next) => {
   }
 };
 
-module.exports = { ClientValidate, ClienteValidateID };
+module.exports = { ClientValidate, ClientValidateID };
