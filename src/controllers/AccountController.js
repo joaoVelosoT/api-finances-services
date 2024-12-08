@@ -36,7 +36,6 @@ const AccountController = {
           },
         },
       });
-
     } catch (error) {
       console.error(error);
       return res.status(500).json({
@@ -54,6 +53,39 @@ const AccountController = {
   },
   getAll: async (req, res) => {
     try {
+      const account = await AccountService.getAll(req.query);
+
+      if (account.code !== 200) {
+        return res.status(account.code).json({
+          error: {
+            code: account.code,
+            method: req.method,
+            message: "Error, while getAll the account",
+            details: {
+              controller: "accountController",
+              cause: account.error.message,
+            },
+          },
+        });
+      }
+
+      return res.status(account.code).json({
+        code: account.code,
+        method: req.method,
+        message: account.message,
+        account: account.accounts,
+        _links: {
+          self: {
+            href: "/account",
+            method: req.method,
+          },
+          create: {
+            href: "/account/create",
+            method: "POST",
+            description: "Create a new account",
+          },
+        },
+      });
     } catch (error) {
       console.error(error);
       return res.status(500).json({

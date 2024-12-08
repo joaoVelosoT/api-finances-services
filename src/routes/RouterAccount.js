@@ -7,4 +7,7 @@ const router = Router();
 // Create account
 router.post("/create", AccountValidate, AccountController.create);
 
+// GetAll Account 
+router.get("/", AccountController.getAll);
+
 module.exports = router;

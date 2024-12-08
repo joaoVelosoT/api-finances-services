@@ -55,7 +55,12 @@ const ClientService = {
       if (countClient !== 0) {
         lastPage = Math.ceil(countClient / limit); // Dividindo a quantidade de cliente com o limite, vamos ter a ultima pagina
       } else {
-        return "err"; // se nao tiver nenhum cliente cadastrado, ira retornar uma mensagem de erro
+        return {
+          code: 202,
+          error: {
+            message: "Clients not found",
+          },
+        }; // se nao tiver nenhum cliente cadastrado, ira retornar uma mensagem de erro
       }
 
       const skip = page * limit - limit; // conta para saber quantos clientes vao pular ate chegar na paginação escolhida
