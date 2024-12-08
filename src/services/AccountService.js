@@ -40,15 +40,20 @@ const AccountService = {
   },
   getAll: async (query) => {
     try {
-      const { page = 1 } = query;
+      // Pegando a paginação que o usuario mandou na url
+      const { page = 1, details } = query;
 
+      console.log(details);
+
+      // Definindo o limite de cada pagina
       const limit = 20;
-
+      // Criando variavel para definir a ultima pagina da requisição, que por padrão e 1
       var lastPage = 1;
-
+      // Vendo a quantidade de contas
       const countAccount = await Account.countDocuments();
 
       if (countAccount !== 0) {
+        // Fazendo conta para saber a ultima pagina, e arredondando para cima
         lastPage = Math.ceil(countAccount / 20);
       } else {
         return {
@@ -58,16 +63,46 @@ const AccountService = {
           },
         }; // se nao tiver nenhuma conta cadastrado, ira retornar uma mensagem de erro
       }
-
+      // Definindo a quantidade de contas que ira pular ate chegar na pagina selecionada
       const skip = page * limit - limit;
 
+      // Pegando as contas
       const accounts = await Account.find().skip(skip).limit(limit);
 
-      return {
-        code : 200,
-        message : "All Account",
-        accounts
+      // Se o usuario não quiser mais detalhes, retornar
+      if (details !== "true") {
+        return {
+          code: 200,
+          message: "All Account",
+          accounts,
+        };
       }
+
+      // Criando array para manipular os dados mais detalhados
+      var accountsDetails = [];
+
+      for (const account of accounts) {
+        const client = await ClientService.getOne(account._idClient);
+        if (client.code !== 200) {
+          return client;
+        }
+        accountsDetails.push({
+          _id: account._id,
+          balance: account.balance,
+          _idClient: account._idClient,
+          client: {
+            _id: client.client._id,
+            name: client.client.name,
+            email: client.client.email,
+          },
+        });
+      }
+
+      return {
+        code: 200,
+        message: "All Account",
+        accounts: accountsDetails,
+      };
     } catch (error) {
       console.error(error);
       throw new Error(error.message);
