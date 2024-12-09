@@ -41,8 +41,6 @@ const ClientService = {
         filter.email = email;
       }
 
-      
-
       // Pegar o limite de cada busca no db;
       const limit = 10;
 
@@ -77,9 +75,9 @@ const ClientService = {
       throw new Error(error.message);
     }
   },
-  getOne: async (id) => {
+  getOne: async (_idClient) => {
     try {
-      const client = await Client.findById(id);
+      const client = await Client.findById(_idClient);
       if (!client) {
         return {
           code: 404,
@@ -99,9 +97,9 @@ const ClientService = {
       throw new Error(error.message);
     }
   },
-  update: async (id, dataClient) => {
+  update: async (_idClient, dataClient) => {
     try {
-      const client = await Client.findById(id);
+      const client = await Client.findById(_idClient);
       if (!client) {
         return {
           code: 404,
@@ -132,9 +130,9 @@ const ClientService = {
       throw new Error(error.message);
     }
   },
-  delete: async (id) => {
+  delete: async (_idClient) => {
     try {
-      const client = await Client.findById(id);
+      const client = await Client.findById(_idClient);
       if (!client) {
         return {
           code: 404,

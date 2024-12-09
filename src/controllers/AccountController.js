@@ -103,6 +103,39 @@ const AccountController = {
   },
   getOne: async (req, res) => {
     try {
+      const account = await AccountService.getOne(req.query, req.params.id);
+
+      if (account.error) {
+        return res.status(account.code).json({
+          error: {
+            code: account.code,
+            method: req.method,
+            message: "Error, while getOne the account",
+            details: {
+              controller: "accountController",
+              cause: account.error.message,
+            },
+          },
+        });
+      }
+
+      return res.status(account.code).json({
+        code: account.code,
+        method: req.method,
+        message: account.message,
+        account: account.account,
+        _links: {
+          self: {
+            href: `/accounts/${account.account._id}`,
+            method: "GET",
+          },
+          delete: {
+            href: `/accounts/delete/${account.account._id}`,
+            method: "DELETE",
+            description: "Delete a account",
+          },
+        },
+      });
     } catch (error) {
       console.error(error);
       return res.status(500).json({

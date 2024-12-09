@@ -108,6 +108,55 @@ const AccountService = {
       throw new Error(error.message);
     }
   },
+  getOne: async (query, _idAccount) => {
+    try {
+      const { details } = query;
+
+      console.log(details);
+
+      const account = await Account.findById(_idAccount);
+
+      if (!account) {
+        return {
+          code: 404,
+          error: {
+            message: "Account not found",
+          },
+        };
+      }
+
+      if (details !== "true") {
+        return {
+          code: 200,
+          message: "One Account",
+          account,
+        };
+      }
+
+      const client = await ClientService.getOne(account._idClient);
+      if (client.code !== 200) {
+        return client;
+      }
+
+      return {
+        code: 200,
+        message: "Account find",
+        account: {
+          _id: account._id,
+          balance: account.balance,
+          _idClient: account._idClient,
+          client: {
+            _id: client.client._id,
+            name: client.client.name,
+            email: client.client.email,
+          },
+        },
+      };
+    } catch (error) {
+      console.error(error);
+      throw new Error(error.message);
+    }
+  },
 };
 
 module.exports = AccountService;
