@@ -153,6 +153,10 @@ const AccountController = {
   },
   update: async (req, res) => {
     try {
+
+      const account = await AccountService.update();
+      
+
     } catch (error) {
       console.error(error);
       return res.status(500).json({

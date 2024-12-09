@@ -1,4 +1,5 @@
 const Account = require("../models/Account");
+const Client = require("../models/Client");
 const ClientService = require("./ClientService");
 
 const AccountService = {
@@ -151,6 +152,39 @@ const AccountService = {
             email: client.client.email,
           },
         },
+      };
+    } catch (error) {
+      console.error(error);
+      throw new Error(error.message);
+    }
+  },
+  update: async (_idAccount, dataAccount) => {
+    try {
+      // Validar se existe a conta enviada
+      const account = await Account.findById(_idAccount);
+
+      if (!account) {
+        return {
+          code: 404,
+          error: {
+            message: "Account not found",
+          },
+        };
+      }
+
+      // Validar se o cliente existe
+      const client = await ClientService.getOne(dataAccount._idCliente);
+
+      if (client.error) {
+        return client;
+      }
+
+      await account.updateOne(dataAccount);
+
+      return {
+        code: 200,
+        message: "Account update",
+        account,
       };
     } catch (error) {
       console.error(error);
