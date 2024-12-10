@@ -107,6 +107,25 @@ const AccountValidateUpdate = async (req, res, next) => {
         });
       }
     }
+
+    // Validando se o usuario enviou pelo menos algum dado para atualizar
+    if (!_idClient && !balance) {
+      return res.status(400).json({
+        code: 400,
+        method: req.method,
+        message: "Invalid account data",
+        details: {
+          cause: "No data was sent to update",
+        },
+      });
+    }
+
+    req.account = {
+      _idClient,
+      balance,
+    };
+
+    return next();
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -122,4 +141,4 @@ const AccountValidateUpdate = async (req, res, next) => {
   }
 };
 
-module.exports = { AccountValidate, AccountValidateID };
+module.exports = { AccountValidate, AccountValidateID, AccountValidateUpdate };

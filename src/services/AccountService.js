@@ -162,7 +162,6 @@ const AccountService = {
     try {
       // Validar se existe a conta enviada
       const account = await Account.findById(_idAccount);
-
       if (!account) {
         return {
           code: 404,
@@ -172,11 +171,12 @@ const AccountService = {
         };
       }
 
-      // Validar se o cliente existe
-      const client = await ClientService.getOne(dataAccount._idCliente);
-
-      if (client.error) {
-        return client;
+      // Validar se enviaram o id para atualizar, e se enviaram, validar se enviaram certo
+      if (dataAccount._idClient) {
+        const client = await ClientService.getOne(dataAccount._idClient);
+        if (client.error) {
+          return client;
+        } 
       }
 
       await account.updateOne(dataAccount);
