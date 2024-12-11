@@ -56,6 +56,8 @@ const AccountController = {
       const account = await AccountService.getAll(req.query);
 
       if (account.code !== 200) {
+        console.log("aq no conteroller", account);
+
         return res.status(account.code).json({
           error: {
             code: account.code,
@@ -68,6 +70,7 @@ const AccountController = {
           },
         });
       }
+      console.log("caiu ");
 
       return res.status(account.code).json({
         code: account.code,
@@ -92,7 +95,7 @@ const AccountController = {
         error: {
           code: 500,
           method: req.method,
-          message: "Error, while creating the account",
+          message: "Error, while getAll the account",
           details: {
             controller: "AccountController",
             cause: error.message,
@@ -201,7 +204,6 @@ const AccountController = {
   },
   delete: async (req, res) => {
     try {
-
       const account = await AccountService.delete(req.params.id);
       if (account.error) {
         return res.status(account.code).json({
@@ -239,6 +241,54 @@ const AccountController = {
           code: 500,
           method: req.method,
           message: "Error, while creating the account",
+          details: {
+            controller: "AccountController",
+            cause: error.message,
+          },
+        },
+      });
+    }
+  },
+  addValue: async (req, res) => {
+    try {
+      // pegar balance e idAccount
+      const account = await AccountService.addValue(req.params.id, req.value);
+      if (account.error) {
+        return res.status(account.code).json({
+          code: account.code,
+          method: req.method,
+          message: "Error, while add value the account",
+          details: {
+            controller: "accountController",
+            cause: account.error.message,
+          },
+        });
+      }
+
+      return res.status(account.code).json({
+        code: account.code,
+        method: req.method,
+        message: account.message,
+        account: account.account,
+        _links: {
+          self: {
+            href: `/accounts/${account.account._id}`,
+            method: "GET",
+          },
+          create: {
+            href: `/accounts/create/`,
+            method: "POST",
+            description: "Create new account",
+          },
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        error: {
+          code: 500,
+          method: req.method,
+          message: "Error, while add value the account",
           details: {
             controller: "AccountController",
             cause: error.message,

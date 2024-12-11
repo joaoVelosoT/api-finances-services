@@ -3,7 +3,7 @@ const isMongoID = (id) => {
     return {
       success: false,
       error: {
-        code: 404,
+        code: 400,
         details: {
           cause: "'id' is required and must be a string",
         },

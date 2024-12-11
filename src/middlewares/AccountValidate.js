@@ -4,22 +4,6 @@ const AccountValidate = async (req, res, next) => {
   try {
     var { _idClient, balance } = req.body;
 
-    if (req.method === "UPDATE" || req.method === "PUT") {
-      if (_idClient) {
-        const isValidId = await isMongoID(_idClient);
-      }
-      if (!_idClient && !balance) {
-        return res.status(400).json({
-          code: 400,
-          method: req.method,
-          message: "Invalid account data",
-          details: {
-            cause: "No data was sent to update",
-          },
-        });
-      }
-    }
-
     const isValidId = await isMongoID(_idClient);
 
     if (!isValidId.success) {
@@ -141,4 +125,44 @@ const AccountValidateUpdate = async (req, res, next) => {
   }
 };
 
-module.exports = { AccountValidate, AccountValidateID, AccountValidateUpdate };
+const AccountValidateAddValue = async (req, res, next) => {
+  try {
+    const { value } = req.body;
+
+    if (!value) {
+      return res.status(400).json({
+        code: 400,
+        method: req.method,
+        message: "Invalid account add value data",
+        details: {
+          cause: "value is required for addvalue ",
+        },
+      });
+    }
+
+    req.value = {
+      value,
+    };
+
+    return next();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: {
+        code: 500,
+        method: req.method,
+        message: "Error, while valide the account",
+        details: {
+          cause: error.message,
+        },
+      },
+    });
+  }
+};
+
+module.exports = {
+  AccountValidate,
+  AccountValidateID,
+  AccountValidateUpdate,
+  AccountValidateAddValue,
+};

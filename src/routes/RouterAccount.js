@@ -4,6 +4,7 @@ const {
   AccountValidate,
   AccountValidateID,
   AccountValidateUpdate,
+  AccountValidateAddValue,
 } = require("../middlewares/AccountValidate");
 const AccountController = require("../controllers/AccountController");
 const router = Router();
@@ -22,5 +23,13 @@ router.put("/update/:id", AccountValidateUpdate, AccountController.update);
 
 //Delete Account
 router.delete("/delete/:id", AccountValidateID, AccountController.delete);
+
+//Add value
+router.patch(
+  "/add-value/:id",
+  AccountValidateID,
+  AccountValidateAddValue,
+  AccountController.addValue
+);
 
 module.exports = router;

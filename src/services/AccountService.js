@@ -5,11 +5,16 @@ const ClientService = require("./ClientService");
 const AccountService = {
   create: async (dataAccount) => {
     try {
-      const isClientExist = await ClientService.getOne(dataAccount._idClient);
+      const isClientExist = await Client.findById(dataAccount._idClient);
 
       // Se não existir o cliente, ira parar a aplicação e retornar a mensagem de erro
-      if (isClientExist.code != 200) {
-        return isClientExist;
+      if (!isClientExist) {
+        return {
+          code: 404,
+          error: {
+            message: "Client not found",
+          },
+        };
       }
 
       const clientHaveAccount = await Account.findOne({
@@ -83,18 +88,27 @@ const AccountService = {
       var accountsDetails = [];
 
       for (const account of accounts) {
-        const client = await ClientService.getOne(account._idClient);
-        if (client.code !== 200) {
-          return client;
+        const client = await Client.findById(account._idClient);
+        console.log("aqui os client", client);
+
+        // Se não existir o cliente, ira parar a aplicação e retornar a mensagem de erro
+        if (!client) {
+          return {
+            code: 404,
+            error: {
+              message: "Client not found",
+            },
+          };
         }
+
         accountsDetails.push({
           _id: account._id,
           balance: account.balance,
           _idClient: account._idClient,
           client: {
-            _id: client.client._id,
-            name: client.client.name,
-            email: client.client.email,
+            _id: client._id,
+            name: client.name,
+            email: client.email,
           },
         });
       }
@@ -211,6 +225,36 @@ const AccountService = {
         code: 200,
         message: "Account deleted",
         account: await Account.findByIdAndDelete(_idAccount),
+      };
+    } catch (error) {
+      console.error(error);
+      throw new Error(error.message);
+    }
+  },
+  addValue: async (_idAccount, value) => {
+    try {
+      // validar se a conta existe
+      const accountExist = await Account.findById(_idAccount);
+      if (!accountExist) {
+        return {
+          code: 404,
+          error: {
+            message: "Account not found",
+          },
+        };
+      }
+
+      // Pegar o saldo da conta e adicionar o valor enviado
+      
+      let balanceAccount = (accountExist.balance) + value
+      // console.log("funfou",Number(accountExist.balance) + value)
+      // atualizar o saldo da conta 
+      await accountExist.updateOne({ balance: balanceAccount });
+
+      return {
+        code: 200,
+        message: "Balance updated",
+        account : accountExist,
       };
     } catch (error) {
       console.error(error);

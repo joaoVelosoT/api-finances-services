@@ -1,4 +1,6 @@
+const Account = require("../models/Account");
 const Client = require("../models/Client");
+const AccountService = require("./AccountService");
 
 const ClientService = {
   create: async (dataClient) => {
@@ -141,8 +143,14 @@ const ClientService = {
           },
         };
       }
-
+      
       // deletar a conta do cliente
+      const account = await Account.findOne({ _idClient: _idClient });
+      if (account) {
+        await account.deleteOne();
+      }
+      
+
       await client.deleteOne();
 
       return {
