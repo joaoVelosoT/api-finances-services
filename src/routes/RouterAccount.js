@@ -20,4 +20,7 @@ router.get("/:id", AccountValidateID, AccountController.getOne);
 //Update Account
 router.put("/update/:id", AccountValidateUpdate, AccountController.update);
 
+//Delete Account
+router.delete("/delete/:id", AccountValidateID, AccountController.delete);
+
 module.exports = router;

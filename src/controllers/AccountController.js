@@ -201,6 +201,37 @@ const AccountController = {
   },
   delete: async (req, res) => {
     try {
+
+      const account = await AccountService.delete(req.params.id);
+      if (account.error) {
+        return res.status(account.code).json({
+          code: account.code,
+          method: req.method,
+          message: "Error, while delete the account",
+          details: {
+            controller: "accountController",
+            cause: account.error.message,
+          },
+        });
+      }
+
+      return res.status(account.code).json({
+        code: account.code,
+        method: req.method,
+        message: account.message,
+        account: account.account,
+        _links: {
+          self: {
+            href: `/accounts/${account.account._id}`,
+            method: "GET",
+          },
+          create: {
+            href: `/accounts/create/`,
+            method: "POST",
+            description: "Create new account",
+          },
+        },
+      });
     } catch (error) {
       console.error(error);
       return res.status(500).json({

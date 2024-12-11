@@ -176,15 +176,41 @@ const AccountService = {
         const client = await ClientService.getOne(dataAccount._idClient);
         if (client.error) {
           return client;
-        } 
+        }
       }
 
+      // Atualizando a conta
       await account.updateOne(dataAccount);
 
       return {
         code: 200,
         message: "Account update",
         account,
+      };
+    } catch (error) {
+      console.error(error);
+      throw new Error(error.message);
+    }
+  },
+  delete: async (_idAccount) => {
+    try {
+      // Validar se existe a conta
+      const account = await Account.findById(_idAccount);
+
+      // Se nao tiver a conta, devolver mensagem de erro
+      if (!account) {
+        return {
+          code: 404,
+          error: {
+            message: "Account not found",
+          },
+        };
+      }
+
+      return {
+        code: 200,
+        message: "Account deleted",
+        account: await Account.findByIdAndDelete(_idAccount),
       };
     } catch (error) {
       console.error(error);
