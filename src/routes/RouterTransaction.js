@@ -7,6 +7,9 @@ const router = Router();
 // Create transaction
 router.post("/create", TransactionValidate, TransactionController.create);
 
+// GetAll Transaction
+router.get("/", TransactionController.getAll);
+
 
 
 
