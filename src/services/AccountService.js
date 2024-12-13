@@ -231,7 +231,7 @@ const AccountService = {
       throw new Error(error.message);
     }
   },
-  addValue: async (_idAccount, value) => {
+  addOrRemoveValue: async (_idAccount, value) => {
     try {
       // validar se a conta existe
       const accountExist = await Account.findById(_idAccount);
@@ -245,16 +245,51 @@ const AccountService = {
       }
 
       // Pegar o saldo da conta e adicionar o valor enviado
-      
-      let balanceAccount = (accountExist.balance) + value
+      console.log("valor aq", value);
+
+      let balanceAccount = accountExist.balance + value;
+
       // console.log("funfou",Number(accountExist.balance) + value)
-      // atualizar o saldo da conta 
+      // atualizar o saldo da conta
       await accountExist.updateOne({ balance: balanceAccount });
 
       return {
         code: 200,
         message: "Balance updated",
-        account : accountExist,
+        account: accountExist,
+      };
+    } catch (error) {
+      console.error(error);
+      throw new Error(error.message);
+    }
+  },
+  getByClient: async (_idClient) => {
+    try {
+      // Validar se existe o cliente
+      const client = await Client.findById(_idClient);
+      if (!client) {
+        return {
+          code: 404,
+          error: {
+            message: "Client not found",
+          },
+        };
+      }
+
+      const account = await Account.findOne({ _idClient: _idClient });
+      if (!account) {
+        return {
+          code: 404,
+          error: {
+            message: "Account not found",
+          },
+        };
+      }
+
+      return {
+        code: 200,
+        message: "Account finded",
+        account: account,
       };
     } catch (error) {
       console.error(error);

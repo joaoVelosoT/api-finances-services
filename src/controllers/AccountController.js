@@ -252,7 +252,10 @@ const AccountController = {
   addValue: async (req, res) => {
     try {
       // pegar balance e idAccount
-      const account = await AccountService.addValue(req.params.id, req.value);
+      const account = await AccountService.addOrRemoveValue(
+        req.params.id,
+        req.value
+      );
       if (account.error) {
         return res.status(account.code).json({
           code: account.code,
@@ -289,6 +292,54 @@ const AccountController = {
           code: 500,
           method: req.method,
           message: "Error, while add value the account",
+          details: {
+            controller: "AccountController",
+            cause: error.message,
+          },
+        },
+      });
+    }
+  },
+  getByClient: async (req, res) => {
+    try {
+      const account = await AccountService.getByClient(req.params.id);
+
+      if (account.error) {
+        return res.status(account.code).json({
+          code: account.code,
+          method: req.method,
+          message: "Error, while getByClient account",
+          details: {
+            controller: "accountController",
+            cause: account.error.message,
+          },
+        });
+      }
+
+      return res.status(account.code).json({
+        code: account.code,
+        method: req.method,
+        message: "Account by client",
+        account: account.account,
+        _links: {
+          self: {
+            href: `/accounts/${account.account._id}`,
+            method: "GET",
+          },
+          create: {
+            href: `/accounts/create/`,
+            method: "POST",
+            description: "Create new account",
+          },
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        error: {
+          code: 500,
+          method: req.method,
+          message: "Error, while get by client account",
           details: {
             controller: "AccountController",
             cause: error.message,

@@ -32,4 +32,11 @@ router.patch(
   AccountController.addValue
 );
 
+//GetByClient
+router.get(
+  "/get-by-client/:id",
+  AccountValidateID,
+  AccountController.getByClient
+);
+
 module.exports = router;
