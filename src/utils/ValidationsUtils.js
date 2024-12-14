@@ -57,4 +57,46 @@ const isDate = (date) => {
   }
 };
 
-module.exports = { isMongoID, isDate };
+const isEmail = (email) => {
+  try {
+    if (!email) {
+      return false;
+    }
+
+    const domains = ["gmail.com", "hotmail.com", "outlook.com"];
+
+    const emailSplit = email.split("@");
+    console.log(emailSplit);
+
+    if (emailSplit[0].length <= 3) {
+      return false;
+    }
+    if (!domains.includes(emailSplit[1])) {
+      return false;
+    }
+
+    console.log(emailSplit);
+    return true;
+  } catch (error) {
+    console.error(error);
+    throw new Error(error.message);
+  }
+};
+
+const isAge = (age) => {
+  try {
+    if (!age || typeof age != "number") {
+      return false;
+    }
+    if (age < 1 || age > 110) {
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error(error);
+    throw new Error(error.message);
+  }
+};
+
+module.exports = { isMongoID, isDate, isEmail, isAge };
