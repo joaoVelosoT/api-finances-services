@@ -13,7 +13,7 @@ const NotificationController = {
             message: "Error, while create the notification",
             details: {
               controller: "NotificationController",
-              cause: account.error.message,
+              cause: notification.error.message,
             },
           },
         });
@@ -62,7 +62,7 @@ const NotificationController = {
             message: "Error, while getAll the notification",
             details: {
               controller: "NotificationController",
-              cause: account.error.message,
+              cause: notification.error.message,
             },
           },
         });
@@ -72,14 +72,14 @@ const NotificationController = {
         code: notification.code,
         method: req.method,
         message: notification.message,
-        notification: notification.notification,
+        notifications: notification.notifications,
         _links: {
           self: {
-            href: `/notifications/${notification.notification._id}`,
+            href: `/notifications/${notification.notifications._id}`,
             method: "GET",
           },
           update: {
-            href: `/notifications/update/${notification.notification._id}`,
+            href: `/notifications/update/${notification.notifications._id}`,
             method: "PUT",
             description: "Update a account",
           },
@@ -111,7 +111,7 @@ const NotificationController = {
             message: "Error, while getOne the notification",
             details: {
               controller: "NotificationController",
-              cause: account.error.message,
+              cause: notification.error.message,
             },
           },
         });
@@ -160,7 +160,7 @@ const NotificationController = {
             message: "Error, while getbyclient the notification",
             details: {
               controller: "NotificationController",
-              cause: account.error.message,
+              cause: notification.error.message,
             },
           },
         });
@@ -212,7 +212,7 @@ const NotificationController = {
             message: "Error, while update the notification",
             details: {
               controller: "NotificationController",
-              cause: account.error.message,
+              cause: notification.error.message,
             },
           },
         });
@@ -245,7 +245,7 @@ const NotificationController = {
           details: {
             controller: "NotificationController",
             cause: error.message,
-          },
+          },b
         },
       });
     }
@@ -261,7 +261,7 @@ const NotificationController = {
             message: "Error, while delete the notification",
             details: {
               controller: "NotificationController",
-              cause: account.error.message,
+              cause: notification.error.message,
             },
           },
         });

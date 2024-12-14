@@ -1,5 +1,9 @@
 const { Router } = require("express");
-const { NotificationValidate, NotificationValidateID } = require("../middlewares/NotificationValidate");
+const {
+  NotificationValidate,
+  NotificationValidateID,
+  NotificationValidateUpdate,
+} = require("../middlewares/NotificationValidate");
 const NotificationController = require("../controllers/NotificationController");
 const router = Router();
 
@@ -23,6 +27,7 @@ router.get(
 router.put(
   "/update/:id",
   NotificationValidateID,
+  NotificationValidateUpdate,
   NotificationController.update
 );
 

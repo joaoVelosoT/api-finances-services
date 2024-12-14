@@ -1,4 +1,4 @@
-const isMongoID = require("../utils/ValidationsUtils");
+const { isMongoID, isDate } = require("../utils/ValidationsUtils");
 
 const NotificationValidate = (req, res, next) => {
   try {
@@ -113,10 +113,25 @@ const NotificationValidateUpdate = async (req, res, next) => {
       }
     }
 
-    // Validar se e realmente uma data
-    // if(dateNotification){
-    //    if(dateNotification ) 
-    // }
+    const validDate = await isDate(dateNotification);
+    if (!validDate) {
+      return res.status(400).json({
+        code: 400,
+        method: req.method,
+        message: "Invalid notification data",
+        details: {
+          cause: "dateNotification not is date",
+        },
+      });
+    }
+
+    req.notification = {
+      _idClient,
+      message,
+      dateNotification,
+    };
+
+    return next();
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -132,4 +147,8 @@ const NotificationValidateUpdate = async (req, res, next) => {
   }
 };
 
-module.exports = { NotificationValidate, NotificationValidateID };
+module.exports = {
+  NotificationValidate,
+  NotificationValidateID,
+  NotificationValidateUpdate,
+};
